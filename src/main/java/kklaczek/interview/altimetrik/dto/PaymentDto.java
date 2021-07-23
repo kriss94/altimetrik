@@ -19,9 +19,10 @@ public class PaymentDto {
     @NotNull
     private Long userId;
 
+    //TODO ask the analyst about validation
     @NotNull
-    @Size(min = 26, max = 26) //TODO ask the analyst about validation
-    private Long targetAcctNumber;
+    @Size(min = 26, max = 26)
+    private String targetAcctNumber;
 
     public Long getId() {
         return id;
@@ -55,11 +56,11 @@ public class PaymentDto {
         this.userId = userId;
     }
 
-    public Long getTargetAcctNumber() {
+    public String getTargetAcctNumber() {
         return targetAcctNumber;
     }
 
-    public void setTargetAcctNumber(Long targetAcctNumber) {
+    public void setTargetAcctNumber(String targetAcctNumber) {
         this.targetAcctNumber = targetAcctNumber;
     }
 
@@ -83,7 +84,7 @@ public class PaymentDto {
         return this;
     }
 
-    public PaymentDto targetAcctNumber(final Long targetAcctNumber) {
+    public PaymentDto targetAcctNumber(final String targetAcctNumber) {
         this.targetAcctNumber = targetAcctNumber;
         return this;
     }
