@@ -3,6 +3,7 @@ package kklaczek.interview.altimetrik.service;
 import kklaczek.interview.altimetrik.dto.PaymentDto;
 import kklaczek.interview.altimetrik.entity.Payment;
 import kklaczek.interview.altimetrik.repository.PaymentRepository;
+import kklaczek.interview.altimetrik.validator.PaymentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,11 +30,14 @@ class PaymentServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
+    @Mock
+    private PaymentValidator paymentValidator;
+
     private PaymentServiceImpl paymentService;
 
     @BeforeEach
     void setUp() {
-        paymentService = new PaymentServiceImpl(paymentRepository, modelMapper);
+        paymentService = new PaymentServiceImpl(paymentRepository, modelMapper, paymentValidator);
     }
 
     @Test
@@ -172,8 +176,6 @@ class PaymentServiceTest {
 
     @Test
     void updateMethodShouldReturnEmptyOptional() {
-        when(paymentRepository.findById(any())).thenReturn(Optional.empty());
-
         Optional<PaymentDto> result = paymentService.update(new PaymentDto().id(5L));
 
         assertThat(result).isEmpty();
@@ -191,8 +193,8 @@ class PaymentServiceTest {
                                                       .targetAcctNumber("12345678901234567890123456");
 
         when(paymentRepository.findById(any())).thenReturn(Optional.of(payment.id(5L)));
-        when(modelMapper.map(any(), eq(Payment.class))).thenReturn(payment);
         when(modelMapper.map(any(), eq(PaymentDto.class))).thenReturn(paymentDto.id(5L));
+        when(paymentValidator.isPaymentDtoValid(any())).thenReturn(true);
 
         Optional<PaymentDto> result = paymentService.update(paymentDto);
 

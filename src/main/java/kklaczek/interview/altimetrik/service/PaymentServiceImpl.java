@@ -3,10 +3,12 @@ package kklaczek.interview.altimetrik.service;
 import kklaczek.interview.altimetrik.dto.PaymentDto;
 import kklaczek.interview.altimetrik.entity.Payment;
 import kklaczek.interview.altimetrik.repository.PaymentRepository;
+import kklaczek.interview.altimetrik.validator.PaymentValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,11 +18,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final ModelMapper modelMapper;
+    private final PaymentValidator paymentValidator;
 
     @Autowired
-    public PaymentServiceImpl(final PaymentRepository paymentRepository, final ModelMapper modelMapper) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, ModelMapper modelMapper, PaymentValidator paymentValidator) {
         this.paymentRepository = paymentRepository;
         this.modelMapper = modelMapper;
+        this.paymentValidator = paymentValidator;
     }
 
     @Override
@@ -50,19 +54,19 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Optional<PaymentDto> update(final PaymentDto paymentDto) {
-        return checkIfPaymentExists(paymentDto.getId())
-                ? updatePayment(paymentDto)
-                : Optional.empty();
+        Optional<Payment> payment = Optional.empty();
+
+        if(paymentValidator.isPaymentDtoValid(paymentDto)) {
+            payment = paymentRepository.findById(paymentDto.getId()).map(p -> updateData(p, paymentDto));
+        }
+
+        return payment.map(value -> modelMapper.map(paymentRepository.save(value), PaymentDto.class));
     }
 
-    private boolean checkIfPaymentExists(final Long id) {
-        return id != null
-                && paymentRepository.findById(id)
-                                    .isPresent();
-    }
-
-    private Optional<PaymentDto> updatePayment(final PaymentDto paymentDto) {
-        final Payment payment = modelMapper.map(paymentDto, Payment.class);
-        return Optional.of(modelMapper.map(paymentRepository.save(payment), PaymentDto.class));
+    private Payment updateData(final Payment payment, final PaymentDto updater) {
+        return payment.amount(updater.getAmount() != null ? updater.getAmount() : payment.getAmount())
+                      .currency(updater.getCurrency() != null ? updater.getCurrency() : payment.getCurrency())
+                      .userId(updater.getUserId() != null ? updater.getUserId() : payment.getUserId())
+                      .targetAcctNumber(updater.getTargetAcctNumber() != null ? updater.getTargetAcctNumber() : payment.getTargetAcctNumber());
     }
 }

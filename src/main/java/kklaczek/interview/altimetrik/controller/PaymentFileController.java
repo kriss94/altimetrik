@@ -2,6 +2,7 @@ package kklaczek.interview.altimetrik.controller;
 
 import kklaczek.interview.altimetrik.service.PaymentFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +18,7 @@ public class PaymentFileController {
         this.paymentFileService = paymentFileService;
     }
 
-    @RequestMapping(value = "/payment/report")
+    @GetMapping(value = "/payment/report")
     public void generateReport(HttpServletResponse response) {
         paymentFileService.generatePaymentsReport(response);
     }
