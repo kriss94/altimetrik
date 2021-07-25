@@ -1,8 +1,6 @@
 package kklaczek.interview.altimetrik.dto;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 public class PaymentDto {
@@ -22,6 +20,7 @@ public class PaymentDto {
     //TODO ask the analyst about validation
     @NotNull
     @Size(min = 26, max = 26)
+    @Pattern(regexp = "\\d+")
     private String targetAcctNumber;
 
     public Long getId() {
@@ -84,7 +83,7 @@ public class PaymentDto {
         return this;
     }
 
-    public PaymentDto targetAcctNumber(final String targetAcctNumber) {
+    public PaymentDto targetAcctNumber(final @NotNull @Size(min = 26, max = 26) String targetAcctNumber) {
         this.targetAcctNumber = targetAcctNumber;
         return this;
     }

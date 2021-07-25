@@ -14,7 +14,7 @@ public class Payment {
     private BigDecimal amount;
     private String currency;
     private Long userId; //TODO relation Many Payment to One User
-    private Long targetAcctNumber;
+    private String targetAcctNumber;
 
     public Long getId() {
         return id;
@@ -48,11 +48,36 @@ public class Payment {
         this.userId = userId;
     }
 
-    public Long getTargetAcctNumber() {
+    public String getTargetAcctNumber() {
         return targetAcctNumber;
     }
 
-    public void setTargetAcctNumber(Long targetAcctNumber) {
+    public void setTargetAcctNumber(String targetAcctNumber) {
         this.targetAcctNumber = targetAcctNumber;
+    }
+
+    public Payment id(final Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Payment amount(final BigDecimal amount) {
+        this.amount = amount;
+        return this;
+    }
+
+    public Payment currency(final String currency) {
+        this.currency = currency;
+        return this;
+    }
+
+    public Payment userId(final Long userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public Payment targetAcctNumber(final String targetAcctNumber) {
+        this.targetAcctNumber = targetAcctNumber;
+        return this;
     }
 }
